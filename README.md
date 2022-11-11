@@ -77,151 +77,26 @@ This module has a few dependencies:
 ### Basic Example:
 Here is an example of how you can use this module in your inventory structure:
 ```hcl
-provider "aws" {
-  region = "us-east-1"
-}
-
-module "vpc" {
-  source  = "clouddrove/vpc/aws"
-  version = "0.15.1"
-
-  name        = "vpc"
-  environment = "test"
-  label_order = ["name", "environment"]
-
-  cidr_block = "172.16.0.0/16"
-}
-
-  module "subnets" {
-  source  = "clouddrove/subnet/aws"
-  version = "1.0.1"
-
-  name        = "subnets"
-  environment = "test"
-  label_order = ["environment", "name"]
-#   tags        = local.tags
-  enabled     = true
-
-  nat_gateway_enabled = true
-  single_nat_gateway  = true
-  availability_zones  = ["us-east-1a", "us-east-1b", "us-east-1c"]
-  vpc_id              = module.vpc.vpc_id
-  cidr_block          = module.vpc.vpc_cidr_block
-  ipv6_cidr_block     = module.vpc.ipv6_cidr_block
-  type                = "public-private"
-  igw_id              = module.vpc.igw_id
-}
-
-data "aws_subnet_ids" "all" {
-  vpc_id = module.vpc.vpc_id
-}
-
-
 module "documentdb" {
-  source = "../../"
+  source = "clouddrove/terraform-aws-documentdb/aws"
   vpc_id                = module.vpc.vpc_id
   subnet_list           = data.aws_subnet_ids.all.ids
   database_name         = "rds"
-  environment           = "main-xcheck"
+  environment           = "test"
   label_order           = ["environment", "name"]
   master_password       = "test123456"
-
-  instance_class = "db.t3.medium"
-  cluster_size   = 1
+  instance_class        = "db.t3.medium"
+  cluster_size          = 1
 }
 
 ```
 ### Secure Example:
 ```hcl
-
-provider "aws" {
-  region = "us-east-1"
-}
-
-module "vpc" {
-  source  = "clouddrove/vpc/aws"
-  version = "0.15.1"
-
-  name        = "vpc"
-  environment = "test"
-  label_order = ["name", "environment"]
-
-  cidr_block = "172.16.0.0/16"
-}
-
- module "subnets" {
-  source  = "clouddrove/subnet/aws"
-  version = "1.0.1"
-
-  name        = "subnets"
-  environment = "main-xcheck"
-  label_order = ["environment", "name"]
-  enabled     = true
-
-  nat_gateway_enabled = true
-  single_nat_gateway  = true
-  availability_zones  = ["us-east-1a", "us-east-1b", "us-east-1c"]
-  vpc_id              = module.vpc.vpc_id
-  cidr_block          = module.vpc.vpc_cidr_block
-  ipv6_cidr_block     = module.vpc.ipv6_cidr_block
-  type                = "public-private"
-  igw_id              = module.vpc.igw_id
-}
-
-data "aws_subnet_ids" "all" {
-  vpc_id = module.vpc.vpc_id
-}
-
-locals {
-  project     = "test"
-  environment = "dev"
-  env_project = "${local.environment}-${local.project}"
-}
-
-data "aws_iam_policy_document" "default" {
-  version = "2012-10-17"
-  statement {
-    sid    = "Enable IAM User Permissions"
-    effect = "Allow"
-    principals {
-      type        = "AWS"
-      identifiers = ["*"]
-    }
-    actions   = ["kms:*"]
-    resources = ["*"]
-  }
-  statement {
-    sid    = "Allow alias creation during setup"
-    effect = "Allow"
-    principals {
-      type        = "AWS"
-      identifiers = ["*"]
-    }
-    actions   = ["kms:CreateAlias"]
-    resources = ["*"]
-  }
-}
-
-
-module "kms_key" {
-  source                  = "clouddrove/kms/aws"
-  version                 = "1.0.1"
-  name                    = "kms"
-  environment             = "test"
-  label_order             = ["environment", "name"]
-  enabled                 = true
-  description             = "KMS key for ec2"
-  deletion_window_in_days = 7
-  enable_key_rotation     = true
-  alias                   = "alias/ec2"
-  policy                  = data.aws_iam_policy_document.default.json
-}
 module "documentdb" {
-  source = "../../"
+  source = "clouddrove/terraform-aws-documentdb/aws"
 
-  vpc_id      = module.vpc.vpc_id
-  subnet_list = module.subnets.private_subnet_id
-
+  vpc_id              = module.vpc.vpc_id
+  subnet_list         = module.subnets.private_subnet_id
   database_name       = "rds"
   environment         = "test"
   label_order         = ["environment", "name"]
@@ -229,139 +104,10 @@ module "documentdb" {
   storage_encrypted   = true
   kms_key_id          = module.kms_key.key_arn
   tls_enabled         = true
-
-  instance_class = "db.t3.medium"
-  cluster_size   = 1
+  instance_class      = "db.t3.medium"
+  cluster_size        = 1
 }
 ```
-
-
-
-
-
-## Inputs
-
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| EVENT\_ALERT\_LIST | Event List which event is not ignore. | `string` | `""` | no |
-| EVENT\_IGNORE\_LIST | Event List which event is ignore. | `string` | `""` | no |
-| SOURCE\_LIST | Event Source List which event is ignore. | `string` | `""` | no |
-| USER\_IGNORE\_LIST | User List which event is ignore. | `string` | `""` | no |
-| acm\_certificate\_expiration\_check | Check ACM Certificates in your account are marked for expiration within the specified number of days. | `bool` | `false` | no |
-| acm\_days\_to\_expiration | Specify the number of days before the rule flags the ACM Certificate as noncompliant. | `number` | `14` | no |
-| alarm\_enabled | The boolean flag whether alarm module is enabled or not. No resources are created when set to false. | `bool` | `true` | no |
-| alarm\_namespace | The namespace in which all alarms are set up. | `string` | `"CISBenchmark"` | no |
-| allow\_users\_to\_change\_password | Whether to allow users to change their own password. | `bool` | `true` | no |
-| analyzer\_enable | The boolean flag whether alarm module is enabled or not. No resources are created when set to false. | `bool` | `true` | no |
-| attributes | Additional attributes (e.g. `1`). | `list(any)` | `[]` | no |
-| aws\_config\_changes\_enabled | If you want to create alarm when any changes in aws config. | `bool` | `true` | no |
-| aws\_iam\_account\_password\_policy | n/a | `bool` | `true` | no |
-| cloudtrail\_bucket\_name | The name of the S3 bucket which will store configuration snapshots. | `string` | n/a | yes |
-| cloudtrail\_cfg\_changes | If you want to create alarm when any changes in cloudtrail cfg. | `bool` | `true` | no |
-| cloudtrail\_enabled | The boolean flag whether cloudtrail module is enabled or not. No resources are created when set to false. | `bool` | `true` | no |
-| cloudtrail\_s3\_policy | Policy for S3. | `string` | `""` | no |
-| cloudwatch\_log\_group\_encrypted | Ensuring that log group is encrypted | `bool` | `false` | no |
-| cloudwatch\_logs\_group\_name | The name of CloudWatch Logs group to which CloudTrail events are delivered. | `string` | `"iam_role_name"` | no |
-| cloudwatch\_logs\_retention\_in\_days | Number of days to retain logs for. CIS recommends 365 days.  Possible values are: 0, 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, and 3653. Set to 0 to keep logs indefinitely. | `number` | `365` | no |
-| config\_cloudtrail\_enabled | Ensuring that the cloudtrail is enabled. | `bool` | `false` | no |
-| config\_enabled | The boolean flag whether config module is enabled or not. No resources are created when set to false. | `bool` | `true` | no |
-| config\_s3\_bucket\_name | The name of the S3 bucket which will store logs for aws  config. | `string` | n/a | yes |
-| console\_signin\_failures | If you want to create alarm when any changes in cloudtrail cfg. | `bool` | `true` | no |
-| default\_ebs\_enable | The boolean flag whether Default EBS  module is enabled or not. No resources are created when set to false. | `bool` | `false` | no |
-| delimiter | Delimiter to be used between `organization`, `environment`, `name` and `attributes`. | `string` | `"-"` | no |
-| disable\_or\_delete\_cmk | If you want to create alarm when disable or delete in cmk. | `bool` | `true` | no |
-| ebs\_snapshot\_public\_restorable | Checks whether Amazon Elastic Block Store snapshots are not publicly restorable. | `bool` | `false` | no |
-| ec2\_encrypted\_volumes | Evaluates whether EBS volumes that are in an attached state are encrypted. Optionally, you can specify the ID of a KMS key to use to encrypt the volume. | `bool` | `false` | no |
-| ec2\_volume\_inuse\_check | Checks whether EBS volumes are attached to EC2 instances. | `bool` | `false` | no |
-| eip\_attached | Checks whether all Elastic IP addresses that are allocated to a VPC are attached to EC2 instances or in-use elastic network interfaces (ENIs). | `bool` | `false` | no |
-| enable\_aws\_foundational\_standard | Boolean whether AWS Foundations standard is enabled. | `bool` | `true` | no |
-| enable\_ccis\_standard | n/a | `bool` | `true` | no |
-| enable\_cis\_standard | Boolean whether CIS standard is enabled. | `bool` | `true` | no |
-| enable\_iam\_baseline | n/a | `bool` | `true` | no |
-| enable\_pci\_dss\_standard | Boolean whether PCI DSS standard is enabled. | `bool` | `true` | no |
-| enabled | The boolean flag whether this module is enabled or not. No resources are created when set to false. | `bool` | `true` | no |
-| environment | Environment (e.g. `prod`, `dev`, `staging`). | `string` | `""` | no |
-| event\_selector | Specifies an event selector for enabling data event logging. See: https://www.terraform.io/docs/providers/aws/r/cloudtrail.html for details on this variable | <pre>list(object({<br>    include_management_events = bool<br>    read_write_type           = string<br><br>  }))</pre> | `[]` | no |
-| guardduty\_enable | Enable monitoring and feedback reporting. Setting to false is equivalent to `suspending` GuardDuty. Defaults to true | `bool` | `true` | no |
-| guardduty\_enabled\_centralized | Checks whether Amazon GuardDuty is enabled in your AWS account and region. | `bool` | `false` | no |
-| guardduty\_s3\_bucket\_name | The name of the S3 bucket which will store guardduty files. | `string` | n/a | yes |
-| iam\_changes | If you want to create alarm when any changes in IAM. | `bool` | `true` | no |
-| iam\_mfa | Check MFA is enabled. | `bool` | `false` | no |
-| iam\_password\_policy | Ensuring that log group is encrypted | `bool` | `false` | no |
-| iam\_root\_access\_key | Checks whether the root user access key is available. The rule is COMPLIANT if the user access key does not exist. | `bool` | `false` | no |
-| inspector\_enabled | Whether Inspector is enabled or not. | `bool` | `true` | no |
-| instances\_in\_vpc | Ensuring that all the instances in VPC | `bool` | `false` | no |
-| ipset\_iplist | IPSet list of trusted IP addresses | `list(any)` | `[]` | no |
-| is\_guardduty\_member | Whether the account is a member account | `bool` | `false` | no |
-| key\_deletion\_window\_in\_days | Duration in days after which the key is deleted after destruction of the resource, must be between 7 and 30 days. Defaults to 30 days. | `number` | `10` | no |
-| label\_order | Label order, e.g. `name`,`application`. | `list(any)` | `[]` | no |
-| managedby | ManagedBy, eg 'CloudDrove' | `string` | `"hello@clouddrove.com"` | no |
-| manager\_iam\_role\_name | The name of the IAM Manager role. | `string` | `"IAM-Manager"` | no |
-| manager\_iam\_role\_policy\_name | The name of the IAM Manager role policy. | `string` | `"IAM-Manager-Policy"` | no |
-| master\_iam\_role\_name | The name of the IAM Master role. | `string` | `"IAM-Master"` | no |
-| master\_iam\_role\_policy\_name | The name of the IAM Master role policy. | `string` | `"IAM-Master-Policy"` | no |
-| max\_password\_age | The number of days that an user password is valid. | `number` | `120` | no |
-| member\_accounts | A list of IDs and emails of AWS accounts which associated as member accounts. | <pre>list(object({<br>    account_id = string<br>    email      = string<br>  }))</pre> | `[]` | no |
-| member\_list | The list of member accounts to be added. Each member list need to have values of account\_id, member\_email and invite boolean | <pre>list(object({<br>    account_id = string<br>    email      = string<br>    invite     = bool<br>  }))</pre> | `[]` | no |
-| minimum\_password\_length | Minimum length to require for user passwords. | `number` | `14` | no |
-| multi\_region\_cloudtrail\_enabled | Ensuring that the multi-region-cloud-trail is enabled | `bool` | `false` | no |
-| nacl\_changes | If you want to create alarm when any changes in nacl. | `bool` | `true` | no |
-| name | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
-| network\_gw\_changes | If you want to create alarm when any changes in network gateway. | `bool` | `true` | no |
-| no\_mfa\_console\_signin | If you want to create alarm when MFA not enabled on root user. | `bool` | `true` | no |
-| no\_policies\_with\_full\_admin\_access | Check user no policies with full admin access. | `bool` | `false` | no |
-| object\_lock\_configuration | With S3 Object Lock, you can store objects using a write-once-read-many (WORM) model. Object Lock can help prevent objects from being deleted or overwritten for a fixed amount of time or indefinitely. | <pre>object({<br>    mode  = string<br>    days  = number<br>    years = number<br>  })</pre> | `null` | no |
-| password\_max\_age | Number of days before password expiration. | `number` | `90` | no |
-| password\_min\_length | Password minimum length. | `number` | `16` | no |
-| password\_require\_lowercase | Require at least one lowercase character in password. | `bool` | `true` | no |
-| password\_require\_numbers | Require at least one number in password. | `bool` | `true` | no |
-| password\_require\_symbols | Require at least one symbol in password. | `bool` | `true` | no |
-| password\_require\_uppercase | Require at least one uppercase character in password. | `bool` | `true` | no |
-| password\_reuse\_prevention | Number of passwords before allowing reuse. | `number` | `24` | no |
-| rds\_instance\_public\_access\_check | Checks whether the Amazon Relational Database Service (RDS) instances are not publicly accessible. | `bool` | `false` | no |
-| rds\_snapshots\_public\_prohibited | Checks if Amazon Relational Database Service (Amazon RDS) snapshots are public. | `bool` | `false` | no |
-| rds\_storage\_encrypted | Checks whether storage encryption is enabled for your RDS DB instances. | `bool` | `false` | no |
-| require\_lowercase\_characters | Whether to require lowercase characters for user passwords. | `bool` | `true` | no |
-| require\_numbers | Whether to require numbers for user passwords. | `bool` | `true` | no |
-| require\_symbols | Whether to require symbols for user passwords. | `bool` | `true` | no |
-| require\_uppercase\_characters | Whether to require uppercase characters for user passwords. | `bool` | `true` | no |
-| resource\_arn | The ARN (Amazon Resource Name) of the resource to be protected. | `string` | `""` | no |
-| restricted\_ports | If you want to enable the restricted incoming port. | `bool` | `false` | no |
-| restricted\_ports\_list | This list of blocked ports. | `string` | `"{\"blockedPort1\": \"22\", \"blockedPort2\": \"3306\",\"blockedPort3\": \"6379\", \"blockedPort4\": \"5432\"}"` | no |
-| root\_usage | If you want to create alarm when sign in with root user. | `bool` | `true` | no |
-| route\_table\_changes | If you want to create alarm when any changes in network gateway. | `bool` | `true` | no |
-| rules\_package\_arns | The rules to be used during the run. | `list(string)` | `[]` | no |
-| s3\_bucket\_policy\_changes | If you want to create alarm when any changes in S3 policy. | `bool` | `true` | no |
-| s3\_bucket\_public\_write\_prohibited | Checks that your S3 buckets do not allow public write access. | `bool` | `false` | no |
-| s3\_bucket\_ssl\_requests\_only | Checks whether S3 buckets have policies that require requests to use Secure Socket Layer (SSL). | `bool` | `false` | no |
-| s3\_mfa\_delete | mfa enable for bucket. | `bool` | `false` | no |
-| schedule\_expression | AWS Schedule Expression: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html | `string` | `"cron(0 14 ? * THU *)"` | no |
-| security\_group\_changes | If you want to create alarm when any changes on security groups. | `bool` | `true` | no |
-| security\_hub\_enable | The boolean flag whether this module is enabled or not. No resources are created when set to false. | `bool` | `true` | no |
-| shield\_enable | The boolean flag whether shield module is enabled or not. No resources are created when set to false. | `bool` | `false` | no |
-| slack\_channel | The channel of slack. | `string` | `""` | no |
-| slack\_webhook | The webhook of slack. | `string` | `""` | no |
-| sns\_topic\_name | Specifies the name of the Amazon SNS topic defined for notification of log file delivery | `string` | `null` | no |
-| support\_iam\_role\_name | The name of the the support role. | `string` | `"IAM-Support"` | no |
-| support\_iam\_role\_policy\_name | The name of the support role policy. | `string` | `"IAM-Support-Role"` | no |
-| support\_iam\_role\_principal\_arn | The ARN of the IAM principal element by which the support role could be assumed. | `string` | `""` | no |
-| tags | Additional tags (e.g. map(`BusinessUnit`,`XYZ`). | `map(any)` | `{}` | no |
-| threatintelset\_activate | Specifies whether GuardDuty is to start using the uploaded ThreatIntelSet | `bool` | `true` | no |
-| threatintelset\_iplist | ThreatIntelSet list of known malicious IP addresses | `list(any)` | `[]` | no |
-| type | Type of Analyzer. Valid value is currently only ACCOUNT. Defaults to ACCOUNT. | `string` | `"ACCOUNT"` | no |
-| unauthorized\_api\_calls | If you want to create alarm for unauthorized api calls. | `bool` | `true` | no |
-| unused\_credentials | Check unused credentials in AWS account. | `bool` | `false` | no |
-| user\_no\_policies | Check user no policies. | `bool` | `false` | no |
-| vpc\_changes | If you want to create alarm when any changes in vpc. | `bool` | `true` | no |
-| vpc\_default\_security\_group\_closed | Checks that the default security group of any Amazon Virtual Private Cloud (VPC) does not allow inbound or outbound traffic. | `bool` | `false` | no |
-
-## Outputs
-
-| Name | Description |
-|------|-------------|
-| cloudtrail\_arn | The Amazon Resource Name of the trail |
-| tags | A mapping of tags to assign to the Cloudtrail. |
-
 
 
 
