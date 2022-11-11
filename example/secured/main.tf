@@ -36,12 +36,6 @@ data "aws_subnet_ids" "all" {
   vpc_id = module.vpc.vpc_id
 }
 
-locals {
-  project     = "test"
-  environment = "dev"
-  env_project = "${local.environment}-${local.project}"
-}
-
 data "aws_iam_policy_document" "default" {
   version = "2012-10-17"
   statement {
