@@ -4,11 +4,11 @@
 
 
 <h1 align="center">
-    Terraform AWS Secure Baseline
+    Terraform AWS DocumentDB
 </h1>
 
 <p align="center" style="font-size: 1.2rem;"> 
-    Terraform module to create an Secure Basline, inclued module is alarm baseline, config baseline, and clouddtrail baseline.
+    Terraform module to create documentdb resource on AWS.
      </p>
 
 <p align="center">
@@ -19,24 +19,24 @@
 <a href="LICENSE.md">
   <img src="https://img.shields.io/badge/License-APACHE-blue.svg" alt="Licence">
 </a>
-<a href="https://github.com/clouddrove/terraform-aws-secure-baseline/actions/workflows/tfsec.yml">
-  <img src="https://github.com/clouddrove/terraform-aws-secure-baseline/actions/workflows/tfsec.yml/badge.svg" alt="tfsec">
+<a href="https://github.com/clouddrove/terraform-aws-documentdb/actions/workflows/tfsec.yaml">
+  <img src="https://github.com/clouddrove/terraform-aws-documentdb/actions/workflows/tfsec.yaml/badge.svg" alt="tfsec">
 </a>
-<a href="https://github.com/clouddrove/terraform-aws-secure-baseline/actions/workflows/terraform.yml">
-  <img src="https://github.com/clouddrove/terraform-aws-secure-baseline/actions/workflows/terraform.yml/badge.svg" alt="static-checks">
+<a href="https://github.com/clouddrove/terraform-aws-documentdb/actions/workflows/terraform.yaml">
+  <img src="https://github.com/clouddrove/terraform-aws-documentdb/actions/workflows/terraform.yaml/badge.svg" alt="static-checks">
 </a>
 
 
 </p>
 <p align="center">
 
-<a href='https://facebook.com/sharer/sharer.php?u=https://github.com/clouddrove/clouddrove/terraform-aws-secure-baseline/modules/'>
+<a href='https://facebook.com/sharer/sharer.php?u=https://github.com/clouddrove/terraform-aws-documentdb'>
   <img title="Share on Facebook" src="https://user-images.githubusercontent.com/50652676/62817743-4f64cb80-bb59-11e9-90c7-b057252ded50.png" />
 </a>
-<a href='https://www.linkedin.com/shareArticle?mini=true&title=Terraform+AWS+Secure+Baseline&url=https://github.com/clouddrove/clouddrove/terraform-aws-secure-baseline/modules/'>
+<a href='https://www.linkedin.com/shareArticle?mini=true&title=Terraform+AWS+DocumentDB&url=https://github.com/clouddrove/terraform-aws-documentdb'>
   <img title="Share on LinkedIn" src="https://user-images.githubusercontent.com/50652676/62817742-4e339e80-bb59-11e9-87b9-a1f68cae1049.png" />
 </a>
-<a href='https://twitter.com/intent/tweet/?text=Terraform+AWS+Secure+Baseline&url=https://github.com/clouddrove/clouddrove/terraform-aws-secure-baseline/modules/'>
+<a href='https://twitter.com/intent/tweet/?text=Terraform+AWS+DocumentDB&url=https://github.com/clouddrove/terraform-aws-documentdb'>
   <img title="Share on Twitter" src="https://user-images.githubusercontent.com/50652676/62817740-4c69db00-bb59-11e9-8a79-3580fbbf6d5c.png" />
 </a>
 
@@ -71,12 +71,12 @@ This module has a few dependencies:
 ## Examples
 
 
-**IMPORTANT:** Since the `master` branch used in `source` varies based on new modifications, we suggest that you use the release versions [here](https://github.com/clouddrove/clouddrove/terraform-aws-secure-baseline/modules//releases).
+**IMPORTANT:** Since the `master` branch used in `source` varies based on new modifications, we suggest that you use the release versions [here](https://github.com/clouddrove/terraform-aws-documentdb/releases).
 
 
-### Basic Example:
+### Simple Example
 Here is an example of how you can use this module in your inventory structure:
-```hcl
+  ```hcl
 module "documentdb" {
   source = "clouddrove/terraform-aws-documentdb/aws"
   vpc_id                = module.vpc.vpc_id
@@ -89,12 +89,11 @@ module "documentdb" {
   cluster_size          = 1
 }
 
-```
-### Secure Example:
+  ```
+### Secure Example
 ```hcl
 module "documentdb" {
   source = "clouddrove/terraform-aws-documentdb/aws"
-
   vpc_id              = module.vpc.vpc_id
   subnet_list         = module.subnets.private_subnet_id
   database_name       = "rds"
@@ -107,7 +106,56 @@ module "documentdb" {
   instance_class      = "db.t3.medium"
   cluster_size        = 1
 }
-```
+
+  ```
+
+
+
+
+
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| apply\_immediately | Specifies whether any cluster modifications are applied immediately, or during the next maintenance window. | `string` | `"true"` | no |
+| attributes | Additional attributes (e.g. `1`). | `list(any)` | `[]` | no |
+| cluster\_family | The family of the DocumentDB cluster parameter group. For more details, see https://docs.aws.amazon.com/documentdb/latest/developerguide/db-cluster-parameter-group-create.html . | `string` | `"docdb4.0"` | no |
+| cluster\_size | Number of DB instances to create in the cluster | `string` | `"2"` | no |
+| database\_name | Name of the database. | `string` | n/a | yes |
+| enabled\_cloudwatch\_logs\_exports | List of log types to export to cloudwatch. The following log types are supported: audit, error, general, slowquery. | `list(string)` | `[]` | no |
+| engine | The name of the database engine to be used for this DB cluster. Defaults to `docdb`. Valid values: `docdb`. | `string` | `"docdb"` | no |
+| engine\_version | The version number of the database engine to use. | `string` | `""` | no |
+| environment | Environment (e.g. `prod`, `dev`, `staging`). | `string` | `""` | no |
+| instance\_class | The instance class to use. For more details, see https://docs.aws.amazon.com/documentdb/latest/developerguide/db-instance-classes.html#db-instance-class-specs . | `string` | `"db.t3.medium"` | no |
+| kms\_key\_id | The ARN for the KMS encryption key. When specifying `kms_key_id`, `storage_encrypted` needs to be set to `true`. | `string` | `""` | no |
+| label\_order | Label order, e.g. `name`,`application`. | `list(any)` | `[]` | no |
+| managedby | ManagedBy, eg 'CloudDrove' | `string` | `"hello@clouddrove.com"` | no |
+| master\_password | (Required unless a snapshot\_identifier is provided) Password for the master DB user. Note that this may show up in logs, and it will be stored in the state file. | `string` | `""` | no |
+| master\_username | (Required unless a snapshot\_identifier is provided) Username for the master DB user. | `string` | `"root"` | no |
+| name | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
+| port | Open port in sg for db communication. | `number` | `27017` | no |
+| preferred\_backup\_window | Daily time range during which the backups happen. | `string` | `"07:00-09:00"` | no |
+| repository | Terraform current module repo | `string` | `"https://github.com/clouddrove/terraform-aws-documentdb"` | no |
+| retention\_period | Number of days to retain backups for. | `string` | `"7"` | no |
+| skip\_final\_snapshot | Determines whether a final DB snapshot is created before the DB cluster is deleted. | `string` | `"false"` | no |
+| snapshot\_identifier | Specifies whether or not to create this cluster from a snapshot. You can use either the name or ARN when specifying a DB cluster snapshot, or the ARN when specifying a DB snapshot. | `string` | `""` | no |
+| storage\_encrypted | Specifies whether the DB cluster is encrypted. | `string` | `"false"` | no |
+| subnet\_list | List of subnet IDs database instances should deploy into. | `list(string)` | n/a | yes |
+| tls\_enabled | When true than cluster using TLS for communication. | `bool` | `false` | no |
+| vpc\_id | ID of the VPC to deploy database into. | `string` | n/a | yes |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| arn | Amazon Resource Name (ARN) of the cluster. |
+| cluster\_name | Cluster Identifier. |
+| master\_password | password for the master DB user. |
+| master\_username | Username for the master DB user. |
+| reader\_endpoint | A read-only endpoint of the DocumentDB cluster, automatically load-balanced across replicas. |
+| writer\_endpoint | Endpoint of the DocumentDB cluster. |
+
 
 
 
@@ -122,9 +170,9 @@ You need to run the following command in the testing folder:
 
 
 ## Feedback 
-If you come accross a bug or have any feedback, please log it in our [issue tracker](https://github.com/clouddrove/clouddrove/terraform-aws-secure-baseline/modules//issues), or feel free to drop us an email at [hello@clouddrove.com](mailto:hello@clouddrove.com).
+If you come accross a bug or have any feedback, please log it in our [issue tracker](https://github.com/clouddrove/terraform-aws-documentdb/issues), or feel free to drop us an email at [hello@clouddrove.com](mailto:hello@clouddrove.com).
 
-If you have found it worth your time, go ahead and give us a ★ on [our GitHub](https://github.com/clouddrove/clouddrove/terraform-aws-secure-baseline/modules/)!
+If you have found it worth your time, go ahead and give us a ★ on [our GitHub](https://github.com/clouddrove/terraform-aws-documentdb)!
 
 ## About us
 
