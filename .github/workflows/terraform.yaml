@@ -21,7 +21,6 @@ jobs:
       minVersion: ${{ steps.minMax.outputs.minVersion }}
       maxVersion: ${{ steps.minMax.outputs.maxVersion }}
 
-
   versionEvaluate:
     name: Evaluate Terraform versions
     runs-on: ubuntu-latest
