@@ -1,8 +1,7 @@
 name: 'Create README.md file'
 on:
-  push:
-    branches:
-      - master
+  pull_request:
+
 
 jobs:
   readme-create:
