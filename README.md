@@ -78,7 +78,8 @@ This module has a few dependencies:
 Here is an example of how you can use this module in your inventory structure:
 ```hcl
 module "documentdb" {
-  source = "clouddrove/terraform-aws-documentdb/aws"
+  source                = "clouddrove/terraform-aws-documentdb/aws"
+  version               = "0.15.1"
   vpc_id                = module.vpc.vpc_id
   subnet_list           = data.aws_subnet_ids.all.ids
   database_name         = "rds"
@@ -93,8 +94,8 @@ module "documentdb" {
 ### Secure Example:
 ```hcl
 module "documentdb" {
-  source = "clouddrove/terraform-aws-documentdb/aws"
-
+  source              = "clouddrove/terraform-aws-documentdb/aws"
+  version             = "0.15.1"
   vpc_id              = module.vpc.vpc_id
   subnet_list         = module.subnets.private_subnet_id
   database_name       = "rds"

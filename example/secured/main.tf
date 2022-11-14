@@ -1,3 +1,88 @@
+
+provider "aws" {
+  region = "eu-west-1"
+}
+
+module "vpc" {
+  source  = "clouddrove/vpc/aws"
+  version = "0.15.1"
+
+  name        = "vpc"
+  environment = "test"
+  label_order = ["name", "environment"]
+
+  cidr_block = "172.16.0.0/16"
+}
+
+module "subnets" {
+  source  = "clouddrove/subnet/aws"
+  version = "0.15.3"
+
+  name               = "subnets"
+  environment        = "test"
+  label_order        = ["name", "environment"]
+  availability_zones = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
+  vpc_id             = module.vpc.vpc_id
+  type               = "public"
+  igw_id             = module.vpc.igw_id
+  cidr_block         = module.vpc.vpc_cidr_block
+  ipv6_cidr_block    = module.vpc.ipv6_cidr_block
+}
+
+module "kms_key" {
+  source                  = "clouddrove/kms/aws"
+  version                 = "1.0.1"
+  name                    = "kms"
+  environment             = "test"
+  label_order             = ["environment", "name"]
+  enabled                 = true
+  description             = "KMS key for ec2"
+  deletion_window_in_days = 7
+  enable_key_rotation     = true
+  alias                   = "alias/ec3"
+  policy                  = data.aws_iam_policy_document.kms.json
+}
+
+
+data "aws_iam_policy_document" "kms" {
+  version = "2012-10-17"
+  statement {
+    sid    = "Enable IAM User Permissions"
+    effect = "Allow"
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+    actions   = ["kms:*"]
+    resources = ["*"]
+  }
+
+}
+
+data "aws_iam_policy_document" "default" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "iam-policy" {
+  statement {
+    actions = [
+      "ssm:UpdateInstanceInformation",
+      "ssmmessages:CreateControlChannel",
+      "ssmmessages:CreateDataChannel",
+      "ssmmessages:OpenControlChannel",
+    "ssmmessages:OpenDataChannel"]
+    effect    = "Allow"
+    resources = ["*"]
+  }
+}
+
 module "documentdb" {
   source = "../../"
   database_name       = "rds"
