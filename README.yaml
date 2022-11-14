@@ -23,11 +23,11 @@ badges:
     image: "https://img.shields.io/badge/License-APACHE-blue.svg"
     url: "LICENSE.md"
   - name: "tfsec"
-    image: "https://github.com/clouddrove/terraform-aws-documentdb/actions/workflows/tfsec.yml/badge.svg"
-    url: "https://github.com/clouddrove/terraform-aws-documentdb/actions/workflows/tfsec.yml"
+    image: "https://github.com/clouddrove/terraform-aws-documentdb/actions/workflows/tfsec.yaml/badge.svg"
+    url: "https://github.com/clouddrove/terraform-aws-documentdb/actions/workflows/tfsec.yaml"
   - name: "static-checks"
-    image: "https://github.com/clouddrove/terraform-aws-documentdb/actions/workflows/terraform.yml/badge.svg"
-    url: "https://github.com/clouddrove/terraform-aws-documentdb/actions/workflows/terraform.yml"
+    image: "https://github.com/clouddrove/terraform-aws-documentdb/actions/workflows/terraform.yaml/badge.svg"
+    url: "https://github.com/clouddrove/terraform-aws-documentdb/actions/workflows/terraform.yaml"
 
 #  description of this project
 description: |-

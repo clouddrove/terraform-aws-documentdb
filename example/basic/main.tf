@@ -1,4 +1,3 @@
-
 module "documentdb" {
   source = "../../"
   database_name         = "rds"

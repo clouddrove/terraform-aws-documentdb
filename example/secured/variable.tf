@@ -21,6 +21,7 @@ variable "instance_class" {
     default = "db.t3.medium"
     description = ""
 }
+
 variable "cluster_size" {
     type = number
     default = 1
