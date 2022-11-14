@@ -79,10 +79,6 @@ variable "cluster_family" {
   description = "The family of the DocumentDB cluster parameter group. For more details, see https://docs.aws.amazon.com/documentdb/latest/developerguide/db-cluster-parameter-group-create.html ."
 }
 
-# variable "tags" {
-#   description = "Map containing tags to use for the instance."
-#   type        = map(string)
-# }
 
 variable "engine" {
   type        = string
@@ -137,7 +133,7 @@ variable "environment" {
 
 variable "repository" {
   type        = string
-  default     = "https://github.com/clouddrove/terraform-aws-dynamodb"
+  default     = "https://github.com/clouddrove/terraform-aws-documentdb"
   description = "Terraform current module repo"
 }
 

@@ -1,8 +1,8 @@
 name: static-checks
+
 on:
-  push:
-    branches:
-      - master
+  pull_request:
+
 jobs:
   versionExtract:
     name: Get min/max versions
@@ -82,3 +82,4 @@ jobs:
 
       - name: Check Terraform format changes
         run: terraform fmt --recursive
+        
