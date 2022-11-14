@@ -53,7 +53,7 @@ usage: |-
     master_password       = "test123456"
     instance_class        = "db.t3.medium"
     cluster_size          = 1
-}
+  }
 
     ```
   ### Secure Example
@@ -71,6 +71,6 @@ usage: |-
     tls_enabled         = true
     instance_class      = "db.t3.medium"
     cluster_size        = 1
-}
+  }
 
     ```
