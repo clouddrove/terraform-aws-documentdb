@@ -123,6 +123,7 @@ module "documentdb" {
 | cluster\_family | The family of the DocumentDB cluster parameter group. For more details, see https://docs.aws.amazon.com/documentdb/latest/developerguide/db-cluster-parameter-group-create.html . | `string` | `"docdb4.0"` | no |
 | cluster\_size | Number of DB instances to create in the cluster | `string` | `"2"` | no |
 | database\_name | Name of the database. | `string` | n/a | yes |
+| deletion\_protection | (optional) describe your variable | `bool` | `null` | no |
 | enabled\_cloudwatch\_logs\_exports | List of log types to export to cloudwatch. The following log types are supported: audit, error, general, slowquery. | `list(string)` | `[]` | no |
 | engine | The name of the database engine to be used for this DB cluster. Defaults to `docdb`. Valid values: `docdb`. | `string` | `"docdb"` | no |
 | engine\_version | The version number of the database engine to use. | `string` | `""` | no |
