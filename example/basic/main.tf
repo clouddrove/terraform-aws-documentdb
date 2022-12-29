@@ -42,4 +42,5 @@ module "documentdb" {
   master_password       = var.master_password
   instance_class        = var.instance_class
   cluster_size          = var.cluster_size
+  deletion_protection   = true
 }
