@@ -161,3 +161,9 @@ variable "attributes" {
 #   default     = {}
 #   description = "Additional tags (e.g. map(`BusinessUnit`,`XYZ`)."
 # }
+
+variable "deletion_protection" {
+  type = bool
+  default = null
+  description = "(optional) describe your variable"
+}
