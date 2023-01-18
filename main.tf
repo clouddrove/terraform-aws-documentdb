@@ -49,6 +49,7 @@ resource "aws_docdb_cluster" "this" {
   final_snapshot_identifier       = lower(var.database_name)
   skip_final_snapshot             = var.skip_final_snapshot
   apply_immediately               = var.apply_immediately
+  deletion_protection             = var.deletion_protection  
   storage_encrypted               = var.storage_encrypted
   kms_key_id                      = var.kms_key_id
   snapshot_identifier             = var.snapshot_identifier
