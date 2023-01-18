@@ -101,4 +101,5 @@ module "documentdb" {
   tls_enabled         = var.tls_enabled
   instance_class      = var.instance_class
   cluster_size        = var.cluster_size
+  deletion_protection = true
 }
