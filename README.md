@@ -80,7 +80,7 @@ Here is an example of how you can use this module in your inventory structure:
 module "documentdb" {
   source = "clouddrove/terraform-aws-documentdb/aws"
   vpc_id                = module.vpc.vpc_id
-  subnet_list           = data.aws_subnet_ids.all.ids
+  subnet_list           = module.subnets.private_subnet_id
   database_name         = "rds"
   environment           = "test"
   label_order           = ["environment", "name"]
