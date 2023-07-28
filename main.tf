@@ -36,7 +36,8 @@ resource "aws_docdb_cluster" "this" {
   apply_immediately               = var.apply_immediately
   deletion_protection             = var.deletion_protection  
   storage_encrypted               = var.storage_encrypted
-  kms_key_id                      = var.kms_key_id // tfsec:ignore:AWS004
+  // tfsec:ignore:AWS004 "Cluster encryption does not use a customer-managed KMS key."
+  kms_key_id                      = var.kms_key_id
   snapshot_identifier             = var.snapshot_identifier
   vpc_security_group_ids          = var.vpc_security_group_ids
   db_subnet_group_name            = aws_docdb_subnet_group.this.name
