@@ -34,11 +34,11 @@ module "subnets" {
 
 module "documentdb" {
   source = "../../"
-  environment             = "dev-xcheck"
+  environment             = "test"
   label_order             = ["environment", "name"]
   vpc_id                  = module.vpc.vpc_id
   subnet_list             = module.subnets.private_subnet_id
-  database_name           = "xhrf"
+  database_name           = "test-db"
   skip_final_snapshot     = false
   storage_encrypted       = true
   kms_key_id              = module.kms_key.key_arn

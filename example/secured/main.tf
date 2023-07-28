@@ -19,7 +19,7 @@ module "subnets" {
   version = "1.3.0"
 
   name        = "subnets"
-  environment = "sandbox"
+  environment = "test"
   label_order = ["environment", "name"]
   enabled     = true
 
@@ -118,5 +118,5 @@ module "documentdb" {
   cluster_size            = 3
   deletion_protection     = true
   preferred_backup_window = "07:00-07:30"
-  
+
 }

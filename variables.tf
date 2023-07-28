@@ -38,21 +38,21 @@ variable "preferred_backup_window" {
 }
 
 variable "skip_final_snapshot" {
-  type        = string
+  type        = bool
   description = "Determines whether a final DB snapshot is created before the DB cluster is deleted."
-  default     = "false"
+  default     = false
 }
 
 variable "apply_immediately" {
-  type        = string
+  type        = bool
   description = "Specifies whether any cluster modifications are applied immediately, or during the next maintenance window."
-  default     = "true"
+  default     = true
 }
 
 variable "storage_encrypted" {
-  type        = string
+  type        = bool
   description = "Specifies whether the DB cluster is encrypted."
-  default     = "false"
+  default     = true
 }
 
 variable "kms_key_id" {
