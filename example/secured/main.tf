@@ -118,4 +118,5 @@ module "documentdb" {
   cluster_size            = 3
   deletion_protection     = true
   preferred_backup_window = "07:00-07:30"
+  
 }
