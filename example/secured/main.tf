@@ -1,6 +1,15 @@
 
 provider "aws" {
-  region = "eu-west-1"
+  region = "us-east-1"
+}
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.0"
+    }
+  }
 }
 
 module "vpc" {
@@ -88,18 +97,34 @@ data "aws_iam_policy_document" "iam-policy" {
   }
 }
 
+module "security_group-documentdb" {
+  source  = "clouddrove/security-group/aws"
+  version = "1.3.0"
+
+  name          = "documentdb"
+  environment   = "test"
+  protocol      = "tcp"
+  label_order   = ["environment", "name"]
+  vpc_id        = module.vpc.vpc_id
+  allowed_ip    = ["172.16.0.0/16"]
+  allowed_ports = [27017]
+}
+
 module "documentdb" {
-  source = "../../"
-  database_name       = "rds"
-  environment         = "test"
-  label_order         = ["environment", "name"]
-  vpc_id              = module.vpc.vpc_id
-  subnet_list         = module.subnets.private_subnet_id
-  skip_final_snapshot = var.skip_final_snapshot
-  storage_encrypted   = var.storage_encrypted
-  kms_key_id          = module.kms_key.key_arn
-  tls_enabled         = var.tls_enabled
-  instance_class      = var.instance_class
-  cluster_size        = var.cluster_size
-  deletion_protection = true
+  source                  = "../../"
+  name                    = "documentdb"
+  environment             = "test"
+  label_order             = ["environment", "name"]
+  vpc_id                  = module.vpc.vpc_id
+  subnet_list             = module.subnets.private_subnet_id
+  vpc_security_group_ids  = [module.security_group-documentdb.security_group_ids]
+  database_name           = "test"
+  skip_final_snapshot     = false
+  storage_encrypted       = true
+  kms_key_id              = module.kms_key.key_arn
+  tls_enabled             = true
+  instance_class          = "db.t3.medium"
+  cluster_size            = 3
+  deletion_protection     = true
+  preferred_backup_window = "07:00-07:30"
 }

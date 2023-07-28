@@ -34,13 +34,18 @@ module "subnets" {
 
 module "documentdb" {
   source = "../../"
-  database_name         = "rds"
-  environment           = "test"
-  vpc_id                = module.vpc.vpc_id
-  subnet_list           = module.subnets.private_subnet_id
-  label_order           = ["environment", "name"]
-  master_password       = var.master_password
-  instance_class        = var.instance_class
-  cluster_size          = var.cluster_size
-  deletion_protection   = true
+  environment             = "dev-xcheck"
+  label_order             = ["environment", "name"]
+  vpc_id                  = module.vpc.vpc_id
+  subnet_list             = module.subnets.private_subnet_id
+  database_name           = "xhrf"
+  skip_final_snapshot     = false
+  storage_encrypted       = true
+  kms_key_id              = module.kms_key.key_arn
+  tls_enabled             = true
+  instance_class          = "db.t3.medium"
+  cluster_size            = 2
+  deletion_protection     = true
+  preferred_backup_window = "07:00-07:30"
+
 }

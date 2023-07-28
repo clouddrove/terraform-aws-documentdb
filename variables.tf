@@ -1,3 +1,7 @@
+##-----------------------------------------------------------------------------
+## AWS Document DB Variables.
+##-----------------------------------------------------------------------------
+
 variable "port" {
   description = "Open port in sg for db communication."
   type        = number
@@ -117,9 +121,21 @@ variable "tls_enabled" {
   description = "When true than cluster using TLS for communication."
 }
 
+variable "deletion_protection" {
+  type = bool
+  default = null
+  description = "(optional) describe your variable"
+}
 
-#Module      : LABEL
-#Description : Terraform label module variables.
+variable "vpc_security_group_ids" {
+  type = set(string)
+  default = null
+}
+
+##-----------------------------------------------------------------------------
+## Labels variables
+##-----------------------------------------------------------------------------
+
 variable "name" {
   type        = string
   default     = ""
@@ -156,14 +172,3 @@ variable "attributes" {
   description = "Additional attributes (e.g. `1`)."
 }
 
-# variable "tags" {
-#   type        = map(string)
-#   default     = {}
-#   description = "Additional tags (e.g. map(`BusinessUnit`,`XYZ`)."
-# }
-
-variable "deletion_protection" {
-  type = bool
-  default = null
-  description = "(optional) describe your variable"
-}
