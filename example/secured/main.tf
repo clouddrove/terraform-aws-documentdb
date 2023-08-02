@@ -98,7 +98,9 @@ module "security_group-documentdb" {
   label_order   = ["environment", "name"]
   vpc_id        = module.vpc.vpc_id
   allowed_ip    = ["172.16.0.0/16"]
+  description   = "Instance default security group"
   allowed_ports = [27017]
+
 }
 
 module "documentdb" {
