@@ -84,8 +84,10 @@ module "documentdb" {
   database_name         = "rds"
   environment           = "test"
   label_order           = ["environment", "name"]
-  master_password       = "test123456"
+  master_username       = "db-user"  
+  master_password       = "gfbaJpP00W0m413Bc1fe"
   instance_class        = "db.t3.medium"
+  cluster_family        = "docdb5.0"  
   cluster_size          = 1
 }
 
@@ -101,11 +103,14 @@ module "documentdb" {
   subnet_list             = module.subnets.private_subnet_id
   vpc_security_group_ids  = [module.security_group-documentdb.security_group_ids]
   database_name           = "test"
+  master_username         = "db-user"  
+  master_password         = "QfbaJpP00W0m413Bw1fe"  
   skip_final_snapshot     = false
   storage_encrypted       = true
   kms_key_id              = module.kms_key.key_arn
   tls_enabled             = true
   instance_class          = "db.t3.medium"
+  cluster_family          = "docdb5.0"  
   cluster_size            = 2
   deletion_protection     = true
   preferred_backup_window = "07:00-07:30"

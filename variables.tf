@@ -75,12 +75,12 @@ variable "vpc_id" {
 variable "subnet_list" {
   description = "List of subnet IDs database instances should deploy into."
   type        = list(string)
-  default     = [""] 
+  default     = [""]
 }
 
 variable "cluster_family" {
   type        = string
-  default     = "docdb4.0"
+  default     = ""
   description = "The family of the DocumentDB cluster parameter group. For more details, see https://docs.aws.amazon.com/documentdb/latest/developerguide/db-cluster-parameter-group-create.html ."
 }
 
@@ -100,7 +100,7 @@ variable "engine_version" {
 variable "enabled_cloudwatch_logs_exports" {
   type        = list(string)
   description = "List of log types to export to cloudwatch. The following log types are supported: audit, error, general, slowquery."
-  default     = ["audit", "error", "general"]
+  default     = ["audit", "audit", "profiler"]
 }
 
 variable "instance_class" {
@@ -122,13 +122,13 @@ variable "tls_enabled" {
 }
 
 variable "deletion_protection" {
-  type = bool
-  default = null
+  type        = bool
+  default     = null
   description = "(optional) describe your variable"
 }
 
 variable "vpc_security_group_ids" {
-  type = set(string)
+  type    = set(string)
   default = null
 }
 

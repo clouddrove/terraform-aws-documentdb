@@ -117,8 +117,9 @@ module "documentdb" {
   kms_key_id              = module.kms_key.key_arn
   tls_enabled             = true
   instance_class          = "db.t3.medium"
-  cluster_size            = 3
-  deletion_protection     = true
+  cluster_family          = "docdb5.0"
+  cluster_size            = 1
+  deletion_protection     = false
   preferred_backup_window = "07:00-07:30"
 
 }
