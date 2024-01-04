@@ -71,7 +71,7 @@ variable "vpc_id" {
 variable "subnet_list" {
   description = "List of subnet IDs database instances should deploy into."
   type        = list(string)
-  default     = [""] 
+  default     = [""]
 }
 
 variable "cluster_family" {
@@ -163,7 +163,7 @@ variable "attributes" {
 # }
 
 variable "deletion_protection" {
-  type = bool
-  default = null
+  type        = bool
+  default     = null
   description = "(optional) describe your variable"
 }

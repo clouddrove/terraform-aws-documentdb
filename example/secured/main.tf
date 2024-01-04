@@ -89,7 +89,7 @@ data "aws_iam_policy_document" "iam-policy" {
 }
 
 module "documentdb" {
-  source = "../../"
+  source              = "../../"
   database_name       = "rds"
   environment         = "test"
   label_order         = ["environment", "name"]
