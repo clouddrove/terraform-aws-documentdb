@@ -21,7 +21,6 @@ module "subnets" {
   name        = "subnets"
   environment = "sandbox"
   label_order = ["environment", "name"]
-  enabled     = true
 
   nat_gateway_enabled = true
   single_nat_gateway  = true
