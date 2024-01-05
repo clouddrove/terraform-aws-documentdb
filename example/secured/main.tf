@@ -5,7 +5,7 @@ provider "aws" {
 
 module "vpc" {
   source  = "clouddrove/vpc/aws"
-  version = "1.3.0"
+  version = "2.0.0"
 
   name        = "vpc"
   environment = "test"
@@ -16,12 +16,11 @@ module "vpc" {
 
 module "subnets" {
   source  = "clouddrove/subnet/aws"
-  version = "1.3.0"
+  version = "2.0.1"
 
   name        = "subnets"
   environment = "sandbox"
   label_order = ["environment", "name"]
-  enabled     = true
 
   nat_gateway_enabled = true
   single_nat_gateway  = true
@@ -89,7 +88,7 @@ data "aws_iam_policy_document" "iam-policy" {
 }
 
 module "documentdb" {
-  source = "../../"
+  source              = "../../"
   database_name       = "rds"
   environment         = "test"
   label_order         = ["environment", "name"]
