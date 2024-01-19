@@ -59,6 +59,7 @@ resource "aws_docdb_cluster_instance" "this" {
   instance_class     = var.instance_class
   tags               = module.labels.tags
   engine             = var.engine
+  ca_cert_identifier = var.ca_cert_identifier
 }
 
 ##-----------------------------------------------------------------------------

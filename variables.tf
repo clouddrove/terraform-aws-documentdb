@@ -132,6 +132,12 @@ variable "vpc_security_group_ids" {
   default = null
 }
 
+variable "ca_cert_identifier" {
+  type        = string
+  default     = null
+  description = "The identifier of the certificate authority (CA) certificate for the DB instance."
+}
+
 ##-----------------------------------------------------------------------------
 ## Labels variables
 ##-----------------------------------------------------------------------------
