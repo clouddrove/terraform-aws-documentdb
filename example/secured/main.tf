@@ -120,4 +120,5 @@ module "documentdb" {
   cluster_size            = var.cluster_size
   deletion_protection     = true
   preferred_backup_window = "07:00-07:30"
+  ca_cert_identifier      = "rds-ca-rsa2048-g1"
 }

@@ -80,7 +80,7 @@ variable "subnet_list" {
 
 variable "cluster_family" {
   type        = string
-  default     = ""
+  default     = "docdb5.0"
   description = "The family of the DocumentDB cluster parameter group. For more details, see https://docs.aws.amazon.com/documentdb/latest/developerguide/db-cluster-parameter-group-create.html ."
 }
 

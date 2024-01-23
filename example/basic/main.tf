@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "eu-west-1"
+  region = "us-east-1"
 }
 
 module "vpc" {
@@ -40,13 +40,7 @@ module "documentdb" {
   database_name           = "test-db"
   master_username         = "test"
   master_password         = var.master_password
-  skip_final_snapshot     = false
-  storage_encrypted       = true
-  kms_key_id              = module.kms_key.key_arn
-  tls_enabled             = true
   instance_class          = var.instance_class
   cluster_size            = var.cluster_size
-  cluster_family          = "docdb5.0"
   deletion_protection     = true
-  preferred_backup_window = "07:00-07:30"
 }

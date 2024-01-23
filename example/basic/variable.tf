@@ -12,6 +12,6 @@ variable "instance_class" {
 
 variable "cluster_size" {
   type        = number
-  default     = 2
+  default     = 1
   description = "cluster size of DocumentDB."
 }
