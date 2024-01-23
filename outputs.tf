@@ -1,5 +1,5 @@
 output "master_username" {
-  value       = aws_docdb_cluster.this.*.master_username
+  value       = try(aws_docdb_cluster.this[0].master_username, null)
   description = "Username for the master DB user."
   sensitive   = true
 }
@@ -11,21 +11,21 @@ output "master_password" {
 }
 
 output "cluster_name" {
-  value       = aws_docdb_cluster.this.*.cluster_identifier
+  value       = try(aws_docdb_cluster.this[0].cluster_identifier, null)
   description = "Cluster Identifier."
 }
 
 output "arn" {
-  value       = aws_docdb_cluster.this.*.arn
+  value       = try(aws_docdb_cluster.this[0].arn, null)
   description = "Amazon Resource Name (ARN) of the cluster."
 }
 
 output "writer_endpoint" {
-  value       = aws_docdb_cluster.this.*.endpoint
+  value       = try(aws_docdb_cluster.this[0].endpoint, null)
   description = "Endpoint of the DocumentDB cluster."
 }
 
 output "reader_endpoint" {
-  value       = aws_docdb_cluster.this.*.reader_endpoint
+  value       = try(aws_docdb_cluster.this[0].reader_endpoint, null)
   description = "A read-only endpoint of the DocumentDB cluster, automatically load-balanced across replicas."
 }

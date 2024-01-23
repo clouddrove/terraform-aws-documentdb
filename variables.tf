@@ -2,12 +2,6 @@
 ## AWS Document DB Variables.
 ##-----------------------------------------------------------------------------
 
-variable "port" {
-  description = "Open port in sg for db communication."
-  type        = number
-  default     = 27017
-}
-
 variable "master_password" {
   description = "(Required unless a snapshot_identifier is provided) Password for the master DB user. Note that this may show up in logs, and it will be stored in the state file."
   type        = string
@@ -65,11 +59,6 @@ variable "snapshot_identifier" {
   type        = string
   default     = ""
   description = "Specifies whether or not to create this cluster from a snapshot. You can use either the name or ARN when specifying a DB cluster snapshot, or the ARN when specifying a DB snapshot."
-}
-
-variable "vpc_id" {
-  description = "ID of the VPC to deploy database into."
-  type        = string
 }
 
 variable "subnet_list" {
@@ -136,6 +125,12 @@ variable "ca_cert_identifier" {
 ## Labels variables
 ##-----------------------------------------------------------------------------
 
+variable "enable" {
+  type        = bool
+  default     = true
+  description = "Flag to control the documentDB creation."
+}
+
 variable "name" {
   type        = string
   default     = ""
@@ -164,12 +159,6 @@ variable "managedby" {
   type        = string
   default     = "hello@clouddrove.com"
   description = "ManagedBy, eg 'CloudDrove'"
-}
-
-variable "attributes" {
-  type        = list(any)
-  default     = []
-  description = "Additional attributes (e.g. `1`)."
 }
 
 variable "deletion_protection" {

@@ -104,10 +104,10 @@ module "security_group-documentdb" {
 
 module "documentdb" {
   source                  = "../../"
+  enable                  = true
   name                    = "documentdb"
   environment             = "test"
   label_order             = ["environment", "name"]
-  vpc_id                  = module.vpc.vpc_id
   subnet_list             = module.subnets.private_subnet_id
   vpc_security_group_ids  = [module.security_group-documentdb.security_group_ids]
   database_name           = "test"

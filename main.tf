@@ -4,6 +4,7 @@
 module "labels" {
   source      = "clouddrove/labels/aws"
   version     = "1.3.0"
+  enabled     = var.enable
   name        = var.name
   repository  = var.repository
   environment = var.environment
@@ -16,7 +17,7 @@ module "labels" {
 ##-----------------------------------------------------------------------------
 
 resource "random_password" "master" {
-  count   = length(var.master_password) == 0 ? 1 : 0
+  count   = var.enable && length(var.master_password) == 0 ? 1 : 0
   length  = 15
   special = false
 }
@@ -26,6 +27,7 @@ resource "random_password" "master" {
 ##-----------------------------------------------------------------------------
 
 resource "aws_docdb_cluster" "this" {
+  count                           = var.enable ? 1 : 0
   cluster_identifier              = var.database_name
   master_username                 = var.master_username
   master_password                 = length(var.master_password) == 0 ? random_password.master[0].result : var.master_password
@@ -39,8 +41,8 @@ resource "aws_docdb_cluster" "this" {
   kms_key_id                      = var.kms_key_id #tfsec:ignore:aws-documentdb-encryption-customer-key
   snapshot_identifier             = var.snapshot_identifier
   vpc_security_group_ids          = var.vpc_security_group_ids
-  db_subnet_group_name            = aws_docdb_subnet_group.this.name
-  db_cluster_parameter_group_name = aws_docdb_cluster_parameter_group.this.name
+  db_subnet_group_name            = aws_docdb_subnet_group.this[0].name
+  db_cluster_parameter_group_name = aws_docdb_cluster_parameter_group.this[0].name
   engine                          = var.engine
   engine_version                  = var.engine_version
   enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
@@ -52,9 +54,9 @@ resource "aws_docdb_cluster" "this" {
 ##-----------------------------------------------------------------------------
 
 resource "aws_docdb_cluster_instance" "this" {
-  count              = var.cluster_size
+  count              = var.enable ? var.cluster_size : 0
   identifier         = "${var.database_name}-${count.index + 1}"
-  cluster_identifier = join("", aws_docdb_cluster.this.*.id)
+  cluster_identifier = aws_docdb_cluster.this[0].id
   apply_immediately  = var.apply_immediately
   instance_class     = var.instance_class
   tags               = module.labels.tags
@@ -67,6 +69,7 @@ resource "aws_docdb_cluster_instance" "this" {
 ##-----------------------------------------------------------------------------
 
 resource "aws_docdb_subnet_group" "this" {
+  count       = var.enable ? 1 : 0
   name        = "subnet-group-${var.database_name}"
   description = "Allowed subnets for DB cluster instances."
   subnet_ids  = var.subnet_list
@@ -78,6 +81,7 @@ resource "aws_docdb_subnet_group" "this" {
 ##-----------------------------------------------------------------------------
 
 resource "aws_docdb_cluster_parameter_group" "this" {
+  count       = var.enable ? 1 : 0
   name        = "parameter-group-${var.database_name}"
   description = "DB cluster parameter group."
   family      = var.cluster_family

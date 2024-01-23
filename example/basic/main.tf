@@ -33,9 +33,9 @@ module "subnets" {
 
 module "documentdb" {
   source              = "../../"
+  enable              = true
   environment         = "test"
   label_order         = ["environment", "name"]
-  vpc_id              = module.vpc.vpc_id
   subnet_list         = module.subnets.private_subnet_id
   database_name       = "test-db"
   master_username     = "test"
