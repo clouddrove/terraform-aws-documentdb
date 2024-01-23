@@ -32,15 +32,15 @@ module "subnets" {
 }
 
 module "documentdb" {
-  source                  = "../../"
-  environment             = "test"
-  label_order             = ["environment", "name"]
-  vpc_id                  = module.vpc.vpc_id
-  subnet_list             = module.subnets.private_subnet_id
-  database_name           = "test-db"
-  master_username         = "test"
-  master_password         = var.master_password
-  instance_class          = var.instance_class
-  cluster_size            = var.cluster_size
-  deletion_protection     = true
+  source              = "../../"
+  environment         = "test"
+  label_order         = ["environment", "name"]
+  vpc_id              = module.vpc.vpc_id
+  subnet_list         = module.subnets.private_subnet_id
+  database_name       = "test-db"
+  master_username     = "test"
+  master_password     = var.master_password
+  instance_class      = var.instance_class
+  cluster_size        = var.cluster_size
+  deletion_protection = true
 }
