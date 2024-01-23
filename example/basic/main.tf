@@ -4,7 +4,7 @@ provider "aws" {
 
 module "vpc" {
   source  = "clouddrove/vpc/aws"
-  version = "1.3.0"
+  version = "2.0.0"
 
   name        = "vpc"
   environment = "test"
@@ -15,12 +15,11 @@ module "vpc" {
 
 module "subnets" {
   source  = "clouddrove/subnet/aws"
-  version = "1.3.0"
+  version = "2.0.1"
 
   name        = "subnets"
   environment = "sandbox"
   label_order = ["environment", "name"]
-  enabled     = true
 
   nat_gateway_enabled = true
   single_nat_gateway  = true
@@ -40,15 +39,14 @@ module "documentdb" {
   subnet_list             = module.subnets.private_subnet_id
   database_name           = "test-db"
   master_username         = "test"
-  master_password         = "QfbaJpP00W0m413Bw1fe"
+  master_password         = var.master_password
   skip_final_snapshot     = false
   storage_encrypted       = true
   kms_key_id              = module.kms_key.key_arn
   tls_enabled             = true
-  instance_class          = "db.t3.medium"
-  cluster_size            = 2
+  instance_class          = var.instance_class
+  cluster_size            = var.cluster_size
   cluster_family          = "docdb5.0"
   deletion_protection     = true
   preferred_backup_window = "07:00-07:30"
-
 }

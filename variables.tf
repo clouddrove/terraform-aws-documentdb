@@ -121,12 +121,6 @@ variable "tls_enabled" {
   description = "When true than cluster using TLS for communication."
 }
 
-variable "deletion_protection" {
-  type        = bool
-  default     = null
-  description = "(optional) describe your variable"
-}
-
 variable "vpc_security_group_ids" {
   type    = set(string)
   default = null
@@ -178,3 +172,8 @@ variable "attributes" {
   description = "Additional attributes (e.g. `1`)."
 }
 
+variable "deletion_protection" {
+  type        = bool
+  default     = null
+  description = "(optional) describe your variable"
+}
