@@ -1,6 +1,6 @@
 
 provider "aws" {
-  region = "eu-west-1"
+  region = "us-east-1"
 }
 
 module "vpc" {
@@ -19,7 +19,7 @@ module "subnets" {
   version = "2.0.1"
 
   name        = "subnets"
-  environment = "sandbox"
+  environment = "test"
   label_order = ["environment", "name"]
 
   nat_gateway_enabled = true
@@ -63,42 +63,38 @@ data "aws_iam_policy_document" "kms" {
 
 }
 
-data "aws_iam_policy_document" "default" {
-  statement {
-    effect  = "Allow"
-    actions = ["sts:AssumeRole"]
-    principals {
-      type        = "Service"
-      identifiers = ["ec2.amazonaws.com"]
-    }
-  }
-}
+module "security_group-documentdb" {
+  source  = "clouddrove/security-group/aws"
+  version = "1.3.0"
 
-data "aws_iam_policy_document" "iam-policy" {
-  statement {
-    actions = [
-      "ssm:UpdateInstanceInformation",
-      "ssmmessages:CreateControlChannel",
-      "ssmmessages:CreateDataChannel",
-      "ssmmessages:OpenControlChannel",
-    "ssmmessages:OpenDataChannel"]
-    effect    = "Allow"
-    resources = ["*"]
-  }
+  name          = "documentdb"
+  environment   = "test"
+  protocol      = "tcp"
+  label_order   = ["environment", "name"]
+  vpc_id        = module.vpc.vpc_id
+  allowed_ip    = ["172.16.0.0/16"]
+  description   = "Instance default security group"
+  allowed_ports = [27017]
+
 }
 
 module "documentdb" {
-  source              = "../../"
-  database_name       = "rds"
-  environment         = "test"
-  label_order         = ["environment", "name"]
-  vpc_id              = module.vpc.vpc_id
-  subnet_list         = module.subnets.private_subnet_id
-  skip_final_snapshot = var.skip_final_snapshot
-  storage_encrypted   = var.storage_encrypted
-  kms_key_id          = module.kms_key.key_arn
-  tls_enabled         = var.tls_enabled
-  instance_class      = var.instance_class
-  cluster_size        = var.cluster_size
-  deletion_protection = true
+  source                  = "../../"
+  enable                  = true
+  name                    = "documentdb"
+  environment             = "test"
+  label_order             = ["environment", "name"]
+  subnet_list             = module.subnets.private_subnet_id
+  vpc_security_group_ids  = [module.security_group-documentdb.security_group_ids]
+  database_name           = "test"
+  skip_final_snapshot     = var.skip_final_snapshot
+  storage_encrypted       = var.storage_encrypted
+  kms_key_id              = module.kms_key.key_arn
+  tls_enabled             = var.tls_enabled
+  instance_class          = var.instance_class
+  cluster_family          = "docdb5.0"
+  cluster_size            = var.cluster_size
+  deletion_protection     = true
+  preferred_backup_window = "07:00-07:30"
+  ca_cert_identifier      = "rds-ca-rsa2048-g1"
 }

@@ -1,8 +1,6 @@
-variable "port" {
-  description = "Open port in sg for db communication."
-  type        = number
-  default     = 27017
-}
+##-----------------------------------------------------------------------------
+## AWS Document DB Variables.
+##-----------------------------------------------------------------------------
 
 variable "master_password" {
   description = "(Required unless a snapshot_identifier is provided) Password for the master DB user. Note that this may show up in logs, and it will be stored in the state file."
@@ -34,21 +32,21 @@ variable "preferred_backup_window" {
 }
 
 variable "skip_final_snapshot" {
-  type        = string
+  type        = bool
   description = "Determines whether a final DB snapshot is created before the DB cluster is deleted."
-  default     = "false"
+  default     = false
 }
 
 variable "apply_immediately" {
-  type        = string
+  type        = bool
   description = "Specifies whether any cluster modifications are applied immediately, or during the next maintenance window."
-  default     = "true"
+  default     = true
 }
 
 variable "storage_encrypted" {
-  type        = string
+  type        = bool
   description = "Specifies whether the DB cluster is encrypted."
-  default     = "false"
+  default     = true
 }
 
 variable "kms_key_id" {
@@ -63,11 +61,6 @@ variable "snapshot_identifier" {
   description = "Specifies whether or not to create this cluster from a snapshot. You can use either the name or ARN when specifying a DB cluster snapshot, or the ARN when specifying a DB snapshot."
 }
 
-variable "vpc_id" {
-  description = "ID of the VPC to deploy database into."
-  type        = string
-}
-
 variable "subnet_list" {
   description = "List of subnet IDs database instances should deploy into."
   type        = list(string)
@@ -76,7 +69,7 @@ variable "subnet_list" {
 
 variable "cluster_family" {
   type        = string
-  default     = "docdb4.0"
+  default     = "docdb5.0"
   description = "The family of the DocumentDB cluster parameter group. For more details, see https://docs.aws.amazon.com/documentdb/latest/developerguide/db-cluster-parameter-group-create.html ."
 }
 
@@ -96,7 +89,7 @@ variable "engine_version" {
 variable "enabled_cloudwatch_logs_exports" {
   type        = list(string)
   description = "List of log types to export to cloudwatch. The following log types are supported: audit, error, general, slowquery."
-  default     = []
+  default     = ["audit", "audit", "profiler"]
 }
 
 variable "instance_class" {
@@ -117,9 +110,27 @@ variable "tls_enabled" {
   description = "When true than cluster using TLS for communication."
 }
 
+variable "vpc_security_group_ids" {
+  type    = set(string)
+  default = null
+}
 
-#Module      : LABEL
-#Description : Terraform label module variables.
+variable "ca_cert_identifier" {
+  type        = string
+  default     = null
+  description = "The identifier of the certificate authority (CA) certificate for the DB instance."
+}
+
+##-----------------------------------------------------------------------------
+## Labels variables
+##-----------------------------------------------------------------------------
+
+variable "enable" {
+  type        = bool
+  default     = true
+  description = "Flag to control the documentDB creation."
+}
+
 variable "name" {
   type        = string
   default     = ""
@@ -149,18 +160,6 @@ variable "managedby" {
   default     = "hello@clouddrove.com"
   description = "ManagedBy, eg 'CloudDrove'"
 }
-
-variable "attributes" {
-  type        = list(any)
-  default     = []
-  description = "Additional attributes (e.g. `1`)."
-}
-
-# variable "tags" {
-#   type        = map(string)
-#   default     = {}
-#   description = "Additional tags (e.g. map(`BusinessUnit`,`XYZ`)."
-# }
 
 variable "deletion_protection" {
   type        = bool

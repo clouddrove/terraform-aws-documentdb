@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "eu-west-1"
+  region = "us-east-1"
 }
 
 module "vpc" {
@@ -33,11 +33,12 @@ module "subnets" {
 
 module "documentdb" {
   source              = "../../"
-  database_name       = "rds"
+  enable              = true
   environment         = "test"
-  vpc_id              = module.vpc.vpc_id
-  subnet_list         = module.subnets.private_subnet_id
   label_order         = ["environment", "name"]
+  subnet_list         = module.subnets.private_subnet_id
+  database_name       = "test-db"
+  master_username     = "test"
   master_password     = var.master_password
   instance_class      = var.instance_class
   cluster_size        = var.cluster_size
