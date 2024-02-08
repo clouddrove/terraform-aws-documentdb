@@ -57,12 +57,6 @@ We have [*fifty plus terraform modules*][terraform_modules]. A few of them are c
 
 This module has a few dependencies: 
 
-- [Terraform 1.x.x](https://learn.hashicorp.com/terraform/getting-started/install.html)
-- [Go](https://golang.org/doc/install)
-- [github.com/stretchr/testify/assert](https://github.com/stretchr/testify)
-- [github.com/gruntwork-io/terratest/modules/terraform](https://github.com/gruntwork-io/terratest)
-
-
 
 
 
@@ -127,13 +121,14 @@ module "documentdb" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| apply\_immediately | Specifies whether any cluster modifications are applied immediately, or during the next maintenance window. | `string` | `"true"` | no |
-| attributes | Additional attributes (e.g. `1`). | `list(any)` | `[]` | no |
-| cluster\_family | The family of the DocumentDB cluster parameter group. For more details, see https://docs.aws.amazon.com/documentdb/latest/developerguide/db-cluster-parameter-group-create.html . | `string` | `"docdb4.0"` | no |
+| apply\_immediately | Specifies whether any cluster modifications are applied immediately, or during the next maintenance window. | `bool` | `true` | no |
+| ca\_cert\_identifier | The identifier of the certificate authority (CA) certificate for the DB instance. | `string` | `null` | no |
+| cluster\_family | The family of the DocumentDB cluster parameter group. For more details, see https://docs.aws.amazon.com/documentdb/latest/developerguide/db-cluster-parameter-group-create.html . | `string` | `"docdb5.0"` | no |
 | cluster\_size | Number of DB instances to create in the cluster | `string` | `"2"` | no |
 | database\_name | Name of the database. | `string` | n/a | yes |
 | deletion\_protection | (optional) describe your variable | `bool` | `null` | no |
-| enabled\_cloudwatch\_logs\_exports | List of log types to export to cloudwatch. The following log types are supported: audit, error, general, slowquery. | `list(string)` | `[]` | no |
+| enable | Flag to control the documentDB creation. | `bool` | `true` | no |
+| enabled\_cloudwatch\_logs\_exports | List of log types to export to cloudwatch. The following log types are supported: audit, error, general, slowquery. | `list(string)` | <pre>[<br>  "audit",<br>  "profiler"<br>]</pre> | no |
 | engine | The name of the database engine to be used for this DB cluster. Defaults to `docdb`. Valid values: `docdb`. | `string` | `"docdb"` | no |
 | engine\_version | The version number of the database engine to use. | `string` | `""` | no |
 | environment | Environment (e.g. `prod`, `dev`, `staging`). | `string` | `""` | no |
@@ -144,16 +139,15 @@ module "documentdb" {
 | master\_password | (Required unless a snapshot\_identifier is provided) Password for the master DB user. Note that this may show up in logs, and it will be stored in the state file. | `string` | `""` | no |
 | master\_username | (Required unless a snapshot\_identifier is provided) Username for the master DB user. | `string` | `"root"` | no |
 | name | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
-| port | Open port in sg for db communication. | `number` | `27017` | no |
+| parameters | A list of DocumentDB parameters to apply. Setting parameters to system default values may show a difference on imported resources. | <pre>list(object({<br>    apply_method = optional(string)<br>    name         = string<br>    value        = string<br>  }))</pre> | `[]` | no |
 | preferred\_backup\_window | Daily time range during which the backups happen. | `string` | `"07:00-09:00"` | no |
 | repository | Terraform current module repo | `string` | `"https://github.com/clouddrove/terraform-aws-documentdb"` | no |
 | retention\_period | Number of days to retain backups for. | `string` | `"7"` | no |
-| skip\_final\_snapshot | Determines whether a final DB snapshot is created before the DB cluster is deleted. | `string` | `"false"` | no |
+| skip\_final\_snapshot | Determines whether a final DB snapshot is created before the DB cluster is deleted. | `bool` | `false` | no |
 | snapshot\_identifier | Specifies whether or not to create this cluster from a snapshot. You can use either the name or ARN when specifying a DB cluster snapshot, or the ARN when specifying a DB snapshot. | `string` | `""` | no |
-| storage\_encrypted | Specifies whether the DB cluster is encrypted. | `string` | `"false"` | no |
+| storage\_encrypted | Specifies whether the DB cluster is encrypted. | `bool` | `true` | no |
 | subnet\_list | List of subnet IDs database instances should deploy into. | `list(string)` | <pre>[<br>  ""<br>]</pre> | no |
-| tls\_enabled | When true than cluster using TLS for communication. | `bool` | `false` | no |
-| vpc\_id | ID of the VPC to deploy database into. | `string` | n/a | yes |
+| vpc\_security\_group\_ids | n/a | `set(string)` | `null` | no |
 
 ## Outputs
 
