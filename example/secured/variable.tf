@@ -10,12 +10,6 @@ variable "storage_encrypted" {
   default     = true
 }
 
-variable "tls_enabled" {
-  type        = bool
-  default     = true
-  description = "When true than cluster using TLS for communication."
-}
-
 variable "instance_class" {
   type        = string
   default     = "db.t3.medium"

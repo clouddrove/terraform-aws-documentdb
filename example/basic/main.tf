@@ -31,6 +31,34 @@ module "subnets" {
   igw_id              = module.vpc.igw_id
 }
 
+module "kms_key" {
+  source                  = "clouddrove/kms/aws"
+  version                 = "1.3.0"
+  name                    = "kms"
+  environment             = "test"
+  label_order             = ["environment", "name"]
+  enabled                 = true
+  description             = "KMS key for ec2"
+  deletion_window_in_days = 7
+  enable_key_rotation     = true
+  alias                   = "alias/ec3"
+  policy                  = data.aws_iam_policy_document.kms.json
+}
+
+data "aws_iam_policy_document" "kms" {
+  version = "2012-10-17"
+  statement {
+    sid    = "Enable IAM User Permissions"
+    effect = "Allow"
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+    actions   = ["kms:*"]
+    resources = ["*"]
+  }
+}
+
 module "documentdb" {
   source              = "../../"
   enable              = true
@@ -38,6 +66,7 @@ module "documentdb" {
   label_order         = ["environment", "name"]
   subnet_list         = module.subnets.private_subnet_id
   database_name       = "test-db"
+  kms_key_id          = module.kms_key.key_arn
   master_username     = "test"
   master_password     = var.master_password
   instance_class      = var.instance_class
