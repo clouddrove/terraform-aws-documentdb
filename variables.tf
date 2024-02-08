@@ -89,7 +89,7 @@ variable "engine_version" {
 variable "enabled_cloudwatch_logs_exports" {
   type        = list(string)
   description = "List of log types to export to cloudwatch. The following log types are supported: audit, error, general, slowquery."
-  default     = ["audit", "audit", "profiler"]
+  default     = ["audit", "profiler"]
 }
 
 variable "instance_class" {
@@ -104,12 +104,6 @@ variable "cluster_size" {
   description = "Number of DB instances to create in the cluster"
 }
 
-variable "tls_enabled" {
-  type        = bool
-  default     = false
-  description = "When true than cluster using TLS for communication."
-}
-
 variable "vpc_security_group_ids" {
   type    = set(string)
   default = null
@@ -119,6 +113,16 @@ variable "ca_cert_identifier" {
   type        = string
   default     = null
   description = "The identifier of the certificate authority (CA) certificate for the DB instance."
+}
+
+variable "parameters" {
+  type = list(object({
+    apply_method = optional(string)
+    name         = string
+    value        = string
+  }))
+  default     = []
+  description = "A list of DocumentDB parameters to apply. Setting parameters to system default values may show a difference on imported resources."
 }
 
 ##-----------------------------------------------------------------------------

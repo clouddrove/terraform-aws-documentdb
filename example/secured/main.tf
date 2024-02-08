@@ -90,11 +90,17 @@ module "documentdb" {
   skip_final_snapshot     = var.skip_final_snapshot
   storage_encrypted       = var.storage_encrypted
   kms_key_id              = module.kms_key.key_arn
-  tls_enabled             = var.tls_enabled
   instance_class          = var.instance_class
   cluster_family          = "docdb5.0"
   cluster_size            = var.cluster_size
   deletion_protection     = true
   preferred_backup_window = "07:00-07:30"
   ca_cert_identifier      = "rds-ca-rsa2048-g1"
+  parameters = [
+    {
+      apply_method = "immediate"
+      name         = "tls"
+      value        = "enabled"
+    }
+  ]
 }
