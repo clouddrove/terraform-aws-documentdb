@@ -23,6 +23,28 @@ resource "random_password" "master" {
 }
 
 ##-----------------------------------------------------------------------------
+## AWS Document DB cluster parameter Group.
+##-----------------------------------------------------------------------------
+
+resource "aws_docdb_cluster_parameter_group" "this" {
+  count       = var.enable ? 1 : 0
+  name        = "parameter-group-${var.database_name}"
+  description = "DB cluster parameter group."
+  family      = var.cluster_family
+
+  dynamic "parameter" {
+    for_each = var.parameters
+    content {
+      apply_method = lookup(parameter.value, "apply_method", null)
+      name         = parameter.value.name
+      value        = parameter.value.value
+    }
+  }
+
+  tags = module.labels.tags
+}
+
+##-----------------------------------------------------------------------------
 ## AWS Document DB Cluster.
 ##-----------------------------------------------------------------------------
 
@@ -47,6 +69,8 @@ resource "aws_docdb_cluster" "this" {
   engine_version                  = var.engine_version
   enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
   tags                            = module.labels.tags
+
+  depends_on = [aws_docdb_cluster_parameter_group.this]
 }
 
 ##-----------------------------------------------------------------------------
@@ -74,20 +98,4 @@ resource "aws_docdb_subnet_group" "this" {
   description = "Allowed subnets for DB cluster instances."
   subnet_ids  = var.subnet_list
   tags        = module.labels.tags
-}
-
-##-----------------------------------------------------------------------------
-## AWS Document DB cluster parameter Group.
-##-----------------------------------------------------------------------------
-
-resource "aws_docdb_cluster_parameter_group" "this" {
-  count       = var.enable ? 1 : 0
-  name        = "parameter-group-${var.database_name}"
-  description = "DB cluster parameter group."
-  family      = var.cluster_family
-  parameter {
-    name  = "tls"
-    value = var.tls_enabled ? "enabled" : "disabled"
-  }
-  tags = module.labels.tags
 }
