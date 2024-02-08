@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2024-02-08
+### :sparkles: New Features
+- [`0ed313d`](https://github.com/clouddrove/terraform-aws-documentdb/commit/0ed313d60f8b3730a581757c004b05dfc2bcec3a) - 🚀 Added support for multi parameter *(PR [#10](https://github.com/clouddrove/terraform-aws-documentdb/pull/10) by [@nileshgadgi](https://github.com/nileshgadgi))*
+
+### :memo: Documentation Changes
+- [`e28254b`](https://github.com/clouddrove/terraform-aws-documentdb/commit/e28254bb3b417a6fc1394b0fa7d0ece5485ab7d3) - update CHANGELOG.md for 1.0.0 *(commit by [@clouddrove-ci](https://github.com/clouddrove-ci))*
+
+
 ## [1.0.0] - 2024-01-25
 ### :sparkles: New Features
 - [`327bbb3`](https://github.com/clouddrove/terraform-aws-documentdb/commit/327bbb324bbe49d27fb59279f927d0d7ae2d1637) - update github-action version and added automerge file *(PR [#8](https://github.com/clouddrove/terraform-aws-documentdb/pull/8) by [@theprashantyadav](https://github.com/theprashantyadav))*
@@ -38,3 +46,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.15.3]: https://github.com/clouddrove/terraform-aws-documentdb/releases/tag/0.15.3
 
 [1.0.0]: https://github.com/clouddrove/terraform-aws-documentdb/compare/0.15.3...1.0.0
+[1.0.1]: https://github.com/clouddrove/terraform-aws-documentdb/compare/1.0.0...1.0.1
