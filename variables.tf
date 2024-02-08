@@ -117,7 +117,7 @@ variable "ca_cert_identifier" {
 
 variable "parameters" {
   type = list(object({
-    apply_method = string
+    apply_method = optional(string)
     name         = string
     value        = string
   }))
