@@ -9,10 +9,10 @@ updates:
     schedule:
       interval: "weekly"
   - package-ecosystem: "terraform" # See documentation for possible values
-    directory: "_example/basic" # Location of package manifests
+    directory: "examples/basic" # Location of package manifests
     schedule:
       interval: "weekly"
   - package-ecosystem: "terraform" # See documentation for possible values
-    directory: "_example/secured" # Location of package manifests
+    directory: "examples/secured" # Location of package manifests
     schedule:
       interval: "weekly"
