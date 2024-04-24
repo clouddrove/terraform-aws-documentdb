@@ -65,7 +65,7 @@ data "aws_iam_policy_document" "kms" {
 
 module "security_group-documentdb" {
   source  = "clouddrove/security-group/aws"
-  version = "1.3.0"
+  version = "2.0.0"
 
   name          = "documentdb"
   environment   = "test"
