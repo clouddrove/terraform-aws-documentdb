@@ -40,7 +40,7 @@ variable "skip_final_snapshot" {
 variable "apply_immediately" {
   type        = bool
   description = "Specifies whether any cluster modifications are applied immediately, or during the next maintenance window."
-  default     = true
+  default     = false
 }
 
 variable "storage_encrypted" {
@@ -113,6 +113,24 @@ variable "ca_cert_identifier" {
   type        = string
   default     = null
   description = "The identifier of the certificate authority (CA) certificate for the DB instance."
+}
+
+variable "docdb_subnet_name" {
+  type        = string
+  default     = null
+  description = "The name of subnet for the DB."
+}
+
+variable "docdb_parameter_group_name" {
+  type        = string
+  default     = null
+  description = "The name of parameter group for the DB instance."
+}
+
+variable "promotion_tier" {
+  type        = string
+  default     = 0
+  description = "Failover Priority setting on instance level. The reader who has lower tier has higher priority to get promoter to writer."
 }
 
 variable "parameters" {

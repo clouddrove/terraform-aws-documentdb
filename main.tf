@@ -27,7 +27,7 @@ resource "random_password" "master" {
 ##-----------------------------------------------------------------------------
 
 resource "aws_docdb_cluster_parameter_group" "this" {
-  count       = var.enable ? 1 : 0
+  count       = var.enable && var.docdb_parameter_group_name == null ? 1 : 0
   name        = "parameter-group-${var.database_name}"
   description = "DB cluster parameter group."
   family      = var.cluster_family
@@ -64,7 +64,7 @@ resource "aws_docdb_cluster" "this" {
   snapshot_identifier             = var.snapshot_identifier
   vpc_security_group_ids          = var.vpc_security_group_ids
   db_subnet_group_name            = aws_docdb_subnet_group.this[0].name
-  db_cluster_parameter_group_name = aws_docdb_cluster_parameter_group.this[0].name
+  db_cluster_parameter_group_name = try(aws_docdb_cluster_parameter_group.this[0].name, var.docdb_parameter_group_name)
   engine                          = var.engine
   engine_version                  = var.engine_version
   enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
@@ -83,6 +83,7 @@ resource "aws_docdb_cluster_instance" "this" {
   cluster_identifier = aws_docdb_cluster.this[0].id
   apply_immediately  = var.apply_immediately
   instance_class     = var.instance_class
+  promotion_tier     = var.promotion_tier
   tags               = module.labels.tags
   engine             = var.engine
   ca_cert_identifier = var.ca_cert_identifier
@@ -94,7 +95,7 @@ resource "aws_docdb_cluster_instance" "this" {
 
 resource "aws_docdb_subnet_group" "this" {
   count       = var.enable ? 1 : 0
-  name        = "subnet-group-${var.database_name}"
+  name        = coalesce(var.docdb_subnet_name, "subnet-group-${var.database_name}")
   description = "Allowed subnets for DB cluster instances."
   subnet_ids  = var.subnet_list
   tags        = module.labels.tags
