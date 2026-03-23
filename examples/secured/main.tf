@@ -65,17 +65,32 @@ data "aws_iam_policy_document" "kms" {
 
 module "security_group-documentdb" {
   source  = "clouddrove/security-group/aws"
-  version = "2.0.0"
+  version = "2.0.2"
 
-  name          = "documentdb"
-  environment   = "test"
-  protocol      = "tcp"
-  label_order   = ["environment", "name"]
-  vpc_id        = module.vpc.vpc_id
-  allowed_ip    = ["172.16.0.0/16"]
-  description   = "Instance default security group"
-  allowed_ports = [27017]
+  name        = "documentdb"
+  environment = "test"
+  label_order = ["environment", "name"]
+  vpc_id      = module.vpc.vpc_id
 
+  ## INGRESS Rules
+  new_sg_ingress_rules_with_cidr_blocks = [{
+    rule_count  = 1
+    from_port   = 27017
+    protocol    = "tcp"
+    to_port     = 27017
+    cidr_blocks = ["172.16.0.0/16"]
+    description = "Allow DocumentDB traffic."
+  }]
+
+  ## EGRESS Rules
+  new_sg_egress_rules_with_cidr_blocks = [{
+    rule_count  = 1
+    from_port   = 0
+    protocol    = "-1"
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow all outbound traffic."
+  }]
 }
 
 module "documentdb" {
