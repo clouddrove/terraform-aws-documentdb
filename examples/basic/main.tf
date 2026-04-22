@@ -4,7 +4,7 @@ provider "aws" {
 
 module "vpc" {
   source  = "clouddrove/vpc/aws"
-  version = "2.0.1"
+  version = "2.0.3"
 
   name        = "vpc"
   environment = "test"
