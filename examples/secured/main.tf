@@ -35,7 +35,7 @@ module "subnets" {
 
 module "kms_key" {
   source                  = "clouddrove/kms/aws"
-  version                 = "1.3.2"
+  version                 = "1.3.3"
   name                    = "kms"
   environment             = "test"
   label_order             = ["environment", "name"]
