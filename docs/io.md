@@ -40,3 +40,4 @@
 | master\_username | Username for the master DB user. |
 | reader\_endpoint | A read-only endpoint of the DocumentDB cluster, automatically load-balanced across replicas. |
 | writer\_endpoint | Endpoint of the DocumentDB cluster. |
+
