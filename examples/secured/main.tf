@@ -73,22 +73,20 @@ module "security_group-documentdb" {
   vpc_id      = module.vpc.vpc_id
 
   ## INGRESS Rules
-  new_sg_ingress_rules_with_cidr_blocks = [{
-    rule_count  = 1
+  new_sg_ingress_rules = [{
+    key         = "allow-documentdb"
     from_port   = 27017
-    protocol    = "tcp"
+    ip_protocol = "tcp"
     to_port     = 27017
-    cidr_blocks = ["172.16.0.0/16"]
+    cidr_ipv4   = "172.16.0.0/16"
     description = "Allow DocumentDB traffic."
   }]
 
   ## EGRESS Rules
-  new_sg_egress_rules_with_cidr_blocks = [{
-    rule_count  = 1
-    from_port   = 0
-    protocol    = "-1"
-    to_port     = 0
-    cidr_blocks = ["0.0.0.0/0"]
+  new_sg_egress_rules = [{
+    key         = "allow-all-ipv4-egress"
+    ip_protocol = "-1"
+    cidr_ipv4   = "0.0.0.0/0"
     description = "Allow all outbound traffic."
   }]
 }
@@ -100,7 +98,7 @@ module "documentdb" {
   environment             = "test"
   label_order             = ["environment", "name"]
   subnet_list             = module.subnets.private_subnet_id
-  vpc_security_group_ids  = [module.security_group-documentdb.security_group_ids]
+  vpc_security_group_ids  = [module.security_group-documentdb.security_group_id]
   database_name           = "test"
   skip_final_snapshot     = var.skip_final_snapshot
   storage_encrypted       = var.storage_encrypted
